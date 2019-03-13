@@ -1,0 +1,5 @@
+{
+    "notes": "Get your clientId and clientSecret from https://dev.fitbit.com/apps",
+    "clientId": "YOUR-CLIENT-ID",
+    "clientSecret": "YOUR_CLIENT_SECRET"
+}
