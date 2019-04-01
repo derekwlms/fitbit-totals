@@ -4,7 +4,9 @@
 
 const express = require("express");
 const FitbitApiClient = require("fitbit-node");
-const config = require('./config.json');
+var localConfig = null;
+try { localConfig = require('./local-config.json') } catch(e) {};
+const config = localConfig || require('./config.json');
 
 const port = process.env.PORT || config.port || 3000;
 const baseUrl = 'http://localhost:' + port + '/';
