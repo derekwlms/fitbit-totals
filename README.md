@@ -23,6 +23,7 @@ Optional: Run `npm i -g` to enable running `fitbit-totals` directly from the com
 
 ## Notes
 - Update `config.json` with your `clientId` and `clientSecret`. You can get these from the [Fitbit app console](https://dev.fitbit.com/apps).
+- If developing in Chromebook's penguin, use [Connection Forwarder](https://chrome.google.com/webstore/detail/connection-forwarder/ahaijnonphgkgnkbklchdhclailflinn/related) for `localhost` redirect access in Chrome.
 - This uses the OAuth2 [authorization_code](https://dev.fitbit.com/build/reference/web-api/oauth2/#authorization-code-grant-flow) grant flow, requiring a browser redirect and callback. It uses the [fitbit-node](https://github.com/lukasolson/fitbit-node) package for the logistics.
 - The Fitbit API has limited support for the [client_credentials](https://dev.fitbit.com/build/reference/web-api/client-credentials/) 
 (two-legged) grant flow. While this would be very handy for server-server, it cannot be used for Fitbit's user data scopes. See the `alternative` folder for an example of using client_credentials to retrieve available activities.
