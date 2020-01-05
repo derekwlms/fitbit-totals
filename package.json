@@ -12,6 +12,7 @@
   "author": "Derek Williams",
   "license": "ISC",
   "dependencies": {
+    "ejs": "^3.0.1",
     "express": "^4.16.4",
     "fitbit-node": "^2.1.0"
   }

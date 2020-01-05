@@ -3,6 +3,7 @@
 // See README.md
 
 const express = require("express");
+const ejs = require('ejs');
 const FitbitApiClient = require("fitbit-node");
 var localConfig = null;
 try { localConfig = require('./local-config.json') } catch(e) {};
@@ -23,7 +24,7 @@ const client = new FitbitApiClient({
 // Register the /totals landing page
 app.get("/totals", (req, res) => {
     // Redirect to the Fitbit authorization page
-    const scopes = 'activity';  // 'activity heartrate location profile';
+    const scopes = 'activity';
 	res.redirect(client.getAuthorizeUrl(scopes, callbackUrl));
 });
 
@@ -35,7 +36,8 @@ app.get("/callback", (req, res) => {
 		// TODO Add pagination since 100 is the max allowed limit
 		client.get(fitbitActivitiesUrl, result.access_token).then(results => {
 			const aggregator = new FitbitAggregator(results[0]);
-			res.send(aggregator.getTotals());
+			let html = ejs.render(aggregator.getTotalsHtmlTemplate(), { activityTotals: aggregator.getTotals() });
+			res.send(html);
 		}).catch(err => {
 			res.status(err.status).send(err);
 		});
