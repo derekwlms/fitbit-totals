@@ -1,11 +1,9 @@
 # Fitbit Totals
 
-> Calculate totals (week, month, year) for Fitbit activities.
+> Calculate totals for Fitbit activities.
 
-## **Under Construction**
-
-<em>fitbit-totals</em> is a simple node.js express app that calls the Fitbit APIs to fetch activity data and
-calculate various totals such as total miles for the current week, month, and year.
+<em>fitbit-totals</em> is a simple node.js express app that calls the Fitbit APIs to fetch activity data for a time period. 
+It then calculates and shows various totals (such as total miles) over that time.
 
 It fills gaps left by the (otherwise awesome) [Fitbit app](https://play.google.com/store/apps/details?id=com.fitbit.FitbitMobile&hl=en_US) 
 and [web site](https://www.fitbit.com/).
@@ -22,7 +20,7 @@ Pre-requisites: [git](https://git-scm.com/) and  [node.js](https://nodejs.org).
 Optional: Run `npm i -g` to enable running `fitbit-totals` directly from the command line.
 
 ## Notes
-- Update `config.json` with your `clientId` and `clientSecret`. You can get these from the [Fitbit app console](https://dev.fitbit.com/apps).
+- Copy `config.json` to `local-config.json` and update it with your `clientId` and `clientSecret`. You can get these from the [Fitbit app console](https://dev.fitbit.com/apps).
 - If developing in Chromebook's penguin, use [Connection Forwarder](https://chrome.google.com/webstore/detail/connection-forwarder/ahaijnonphgkgnkbklchdhclailflinn/related) for `localhost` redirect access in Chrome.
 - This uses the OAuth2 [authorization_code](https://dev.fitbit.com/build/reference/web-api/oauth2/#authorization-code-grant-flow) grant flow, requiring a browser redirect and callback. It uses the [fitbit-node](https://github.com/lukasolson/fitbit-node) package for the logistics.
 - The Fitbit API has limited support for the [client_credentials](https://dev.fitbit.com/build/reference/web-api/client-credentials/) 

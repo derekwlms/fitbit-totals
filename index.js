@@ -17,34 +17,50 @@ const fitbitActivitiesUrl = `/activities/list.json?afterDate=${new Date().getFul
 
 const app = express();
 const client = new FitbitApiClient({
-	clientId: config.clientId,
-	clientSecret: config.clientSecret
+    clientId: config.clientId,
+    clientSecret: config.clientSecret
 });
+const aggregator = new FitbitAggregator();
 
 // Register the /totals landing page
 app.get("/totals", (req, res) => {
     // Redirect to the Fitbit authorization page
     const scopes = 'activity';
-	res.redirect(client.getAuthorizeUrl(scopes, callbackUrl));
+    res.redirect(client.getAuthorizeUrl(scopes, callbackUrl));
 });
 
 // Handle the callback from the Fitbit authorization flow
 app.get("/callback", (req, res) => {
-	// Exchange the authorization code we just received for an access token
-	client.getAccessToken(req.query.code, callbackUrl).then(result => {
-		// Use the access token to fetch the activity logs list
-		// TODO Add pagination since 100 is the max allowed limit
-		client.get(fitbitActivitiesUrl, result.access_token).then(results => {
-			const aggregator = new FitbitAggregator(results[0]);
-			let html = ejs.render(aggregator.getTotalsHtmlTemplate(), { activityTotals: aggregator.getTotals() });
-			res.send(html);
-		}).catch(err => {
-			res.status(err.status).send(err);
-		});
-	}).catch(err => {
-		res.status(err.status).send(err);
-	});
+    // Exchange the authorization code we just received for an access token
+    client.getAccessToken(req.query.code, callbackUrl).then(result => {
+        // Use the access token to fetch the activity logs list
+        // Fetch using pagination since 100 is the max allowed limit
+        new Promise((resolve, reject) => {
+            fetchActivities(fitbitActivitiesUrl, result.access_token, aggregator, resolve, reject)
+        }).then(response => {
+            let html = ejs.render(aggregator.getTotalsHtmlTemplate(), { activityTotals: aggregator.getTotals() });
+            res.send(html);
+        }).catch(err => {
+            res.status(err.status).send(err);
+        });
+    }).catch(err => {
+        res.status(err.status).send(err);
+    });
 });
+
+var fetchActivities = (url, accessToken, aggregator, resolve, reject) => {
+    console.log("Fetching activities", url);
+    client.get(url, accessToken).then(results => {
+        aggregator.addActivities(results[0].activities);
+        let nextPageUrl = results[0].pagination.next;
+        if (nextPageUrl) {
+            let absoluteUrl = nextPageUrl.replace(client.getUrl(''), '');
+            fetchActivities(absoluteUrl, accessToken, aggregator, resolve, reject);
+        } else {
+            resolve(aggregator);
+        }
+      });
+};
 
 console.log('Open your browser to ' + baseUrl + 'totals');
 app.listen(port);
